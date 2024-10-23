@@ -1,6 +1,7 @@
 # https://github.com/Garrymag/lessons/blob/master/module_1_6.py
 
 # Работа со словарями
+# Создаем словарь
 my_dict = {
     "Имя": "Алексей",
     "Год рождения": 1990,
