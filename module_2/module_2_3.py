@@ -10,7 +10,10 @@ index = 0
 while index < len(my_list):
     # Получаем текущее число
     current_number = my_list[index]
-
+    # Проверяем, не является ли нулем
+    if current_number == 0:
+        index += 1
+        continue # уходим на следующую итерацию, если ноль
     # Проверяем, является ли число отрицательным
     if current_number < 0:
         break  # Выходим из цикла, если число отрицательное
