@@ -1,97 +1,99 @@
 class House:
     def __init__(self, name, number_of_floors):
-        # Сохраняем название дома как атрибут объекта
+        # Конструктор класса House
+        # name - название дома
+        # number_of_floors - количество этажей в доме
         self.name = name
-        # Сохраняем количество этажей как атрибут объекта
         self.number_of_floors = number_of_floors
 
     def go_to(self, new_floor):
-        # Проверяем, является ли указанный этаж корректным
+        # Метод для перехода на указанный этаж
+        # new_floor - этаж, на который хотим перейти
         if new_floor < 1 or new_floor > self.number_of_floors:
-            print("Такого этажа не существует")
+            print("Такого этажа не существует")  # Если этаж вне диапазона
         else:
             # Если этаж корректный, выводим все этажи от 1 до указанного
             for floor in range(1, new_floor + 1):
                 print(floor)
 
     def __len__(self):
-        # Возвращаем количество этажей
+        # Метод возвращает количество этажей в доме
         return self.number_of_floors
 
     def __str__(self):
-        # Возвращаем строковое представление объекта
+        # Метод возвращает строковое представление объекта House
         return f"Название: {self.name}, кол-во этажей: {self.number_of_floors}"
 
     # Методы сравнения
     def __eq__(self, other):
-        # Проверяем, что other является объектом House
+        # Метод для проверки на равенство
+        # Если other - объект House, сравниваем количество этажей
         if isinstance(other, House):
             return self.number_of_floors == other.number_of_floors
-        # Если other не объект House, возвращаем False
-        return False
+        # Если other - целое число, сравниваем с количеством этажей
+        elif isinstance(other, int):
+            return self.number_of_floors == other
+        # Если other не поддерживаемый тип, возвращаем NotImplemented
+        return NotImplemented
 
     def __lt__(self, other):
-        # Проверяем, что other является объектом House или числом
+        # Метод для проверки, меньше ли количество этажей
         if isinstance(other, House):
             return self.number_of_floors < other.number_of_floors
-        # Если other число, сравниваем с ним
-        if isinstance(other, int):
+        elif isinstance(other, int):
             return self.number_of_floors < other
         return NotImplemented
 
     def __le__(self, other):
-        # Проверяем, что other является объектом House или числом
+        # Метод для проверки, меньше или равно ли количество этажей
         if isinstance(other, House):
             return self.number_of_floors <= other.number_of_floors
-        # Если other число, сравниваем с ним
-        if isinstance(other, int):
+        elif isinstance(other, int):
             return self.number_of_floors <= other
         return NotImplemented
 
     def __gt__(self, other):
-        # Проверяем, что other является объектом House или числом
+        # Метод для проверки, больше ли количество этажей
         if isinstance(other, House):
             return self.number_of_floors > other.number_of_floors
-        # Если other число, сравниваем с ним
-        if isinstance(other, int):
+        elif isinstance(other, int):
             return self.number_of_floors > other
         return NotImplemented
 
     def __ge__(self, other):
-        # Проверяем, что other является объектом House или числом
+        # Метод для проверки, больше или равно ли количество этажей
         if isinstance(other, House):
             return self.number_of_floors >= other.number_of_floors
-        # Если other число, сравниваем с ним
-        if isinstance(other, int):
+        elif isinstance(other, int):
             return self.number_of_floors >= other
         return NotImplemented
 
     def __ne__(self, other):
-        # Проверяем, что other является объектом House
+        # Метод для проверки на неравенство
         if isinstance(other, House):
             return self.number_of_floors != other.number_of_floors
-        # Если other не объект House, возвращаем False
-        return False
+        elif isinstance(other, int):
+            return self.number_of_floors != other
+        return NotImplemented
 
     # Методы арифметических операций
     def __add__(self, value):
-        # Проверяем, что value является числом
+        # Метод для сложения количества этажей с целым числом
         if isinstance(value, int):
-            # Создаем новый объект с тем же именем и увеличенным кол-вом этажей
-            return House(self.name, self.number_of_floors + value)
-        return NotImplemented
-
-    def __radd__(self, value):
-        # Вызываем __add__, так как сложение коммутативно
-        return self.__add__(value)
-
-    def __iadd__(self, value):
-        # Увеличиваем количество этажей текущего объекта
-        if isinstance(value, int):
+            # Возвращаем объект House с увеличенным количеством этажей
             self.number_of_floors += value
             return self
         return NotImplemented
 
+    def __radd__(self, value):
+        # Метод для сложения, когда объект House находится справа
+        # Вызываем __add__
+        return self.__add__(value)
+
+    def __iadd__(self, value):
+        # Метод для увеличения количества этажей текущего объекта
+        # Вызываем __add__
+        return self.__add__(value)
 
 # Пример использования
 h1 = House('ЖК Эльбрус', 10)
