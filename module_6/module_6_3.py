@@ -64,7 +64,7 @@ class PoisonousAnimal(Animal):
     _DEGREE_OF_DANGER = 8  # Степень опасности для ядовитых животных
 
 
-class Duckbill(Bird, AquaticAnimal, PoisonousAnimal):
+class Duckbill(PoisonousAnimal, Bird, AquaticAnimal):
     sound = "Click-click-click"  # Звук утконоса
 
     def __init__(self, speed):
