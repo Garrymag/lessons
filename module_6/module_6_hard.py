@@ -1,122 +1,198 @@
 import math
 
+
 class Figure:
-    sides_count = 0  # Класс атрибут для подсчета сторон
+    """Базовый класс для геометрических фигур"""
+
+    # Количество сторон по умолчанию
+    sides_count = 0
 
     def __init__(self, color, *sides):
-        self.__color = list(color) if self.__is_valid_color(*color) else [0, 0, 0]  # Установка цвета с проверкой
-        self.filled = False  # Публичный атрибут, обозначающий заполненность
-        # Проверяем количество сторон, если их не достаточно, создаем список с единицами
-        if self.__is_valid_sides(*sides):
+        """
+        Инициализация фигуры
+
+        :param color: кортеж цвета RGB
+        :param sides: стороны фигуры
+        """
+        # Публичный атрибут заливки
+        self.filled = False
+
+        # Приватный атрибут цвета
+        self.__color = list(color)
+
+        # Приватный атрибут сторон
+        if len(sides) == self.sides_count:
+            # Если передано корректное количество сторон
             self.__sides = list(sides)
         else:
-            self.__sides = [1] * self.sides_count  # Создаем массив с единицами
+            # Иначе создаем список из единиц нужной длины
+            self.__sides = [1] * self.sides_count
 
-    # Геттер для цвета
+    def __is_valid_color(self, r, g, b):
+        """
+        Проверка корректности цвета
+
+        :return: True если цвет корректен, иначе False
+        """
+        return all(isinstance(x, int) and 0 <= x <= 255 for x in (r, g, b))
+
+    def __is_valid_sides(self, *sides):
+        """
+        Проверка корректности сторон
+
+        :return: True если стороны корректны, иначе False
+        """
+        return (len(sides) == self.sides_count and
+                all(isinstance(side, int) and side > 0 for side in sides))
+
     def get_color(self):
-        return self.__color.copy()
+        """Получение текущего цвета"""
+        return self.__color
 
-    # Сеттер для цвета с проверкой валидности
     def set_color(self, r, g, b):
+        """
+        Установка нового цвета
+
+        :param r: красный канал
+        :param g: зеленый канал
+        :param b: синий канал
+        """
         if self.__is_valid_color(r, g, b):
             self.__color = [r, g, b]
 
-    # Внутренний метод для проверки валидности цвета
-    def __is_valid_color(self, r, g, b):
-        return all(isinstance(c, int) and 0 <= c <= 255 for c in (r, g, b))
-
-    # Внутренний метод для проверки валидности сторон
-    def __is_valid_sides(self, *new_sides):
-        if len(new_sides) != self.sides_count:
-            return False
-        return all(isinstance(side, int) and side > 0 for side in new_sides)
-
-    # Геттер для сторон
     def get_sides(self):
-        return self.__sides.copy()
+        """Получение списка сторон"""
+        return self.__sides
 
-    # Сеттер для сторон с проверкой валидности
     def set_sides(self, *new_sides):
+        """
+        Установка новых сторон
+
+        :param new_sides: новые значения сторон
+        """
         if self.__is_valid_sides(*new_sides):
             self.__sides = list(new_sides)
 
-    # Периметр фигуры
     def __len__(self):
+        """
+        Возвращает периметр фигуры
+
+        :return: сумма всех сторон
+        """
         return sum(self.__sides)
 
+
 class Circle(Figure):
-    sides_count = 1  # У круга одна сторона
+    """Класс круга"""
+    # Количество сторон для круга
+    sides_count = 1
 
     def __init__(self, color, *sides):
+        """
+        Инициализация круга
+
+        :param color: цвет круга
+        :param sides: длина окружности или радиус
+        """
         super().__init__(color, *sides)
-        # Рассчитываем радиус исходя из длины окружности
-        circumference = len(self)
-        self.__radius = circumference / (2 * math.pi)  # Радиус
 
-    # Метод для получения площади круга
+        # Расчет радиуса
+        self.__radius = self.get_sides()[0] / (2 * math.pi)
+
     def get_square(self):
-        return math.pi * (self.__radius ** 2)
+        """
+        Расчет площади круга
 
-    # Геттер для радиуса
-    def get_radius(self):
-        return self.__radius
+        :return: площадь круга
+        """
+        return math.pi * self.__radius ** 2
+
 
 class Triangle(Figure):
-    sides_count = 3  # У треугольника три стороны
+    """Класс треугольника"""
+    # Количество сторон для треугольника
+    sides_count = 3
 
-    def __init__(self, color, *sides):
-        super().__init__(color, *sides)
-
-    # Метод для получения площади треугольника по формуле Герона
     def get_square(self):
+        """
+        Расчет площади треугольника по формуле Герона
+
+        :return: площадь треугольника
+        """
+        # Получаем стороны
         a, b, c = self.get_sides()
-        s = (a + b + c) / 2
-        return math.sqrt(s * (s - a) * (s - b) * (s - c))
+
+        # Полупериметр
+        p = (a + b + c) / 2
+
+        # Формула Герона
+        return math.sqrt(p * (p - a) * (p - b) * (p - c))
 
 class Cube(Figure):
-    sides_count = 12  # У куба 12 рёбер
+    """Класс куба"""
+    # Количество сторон для куба
+    sides_count = 12
 
     def __init__(self, color, *sides):
+        """
+        Инициализация куба
+
+        :param color: цвет куба
+        :param sides: сторона куба
+        """
+        # Если передана одна сторона, создаем список из 12 одинаковых сторон
+        if len(sides) == 1:
+            sides = [sides[0]] * self.sides_count
+
+        # Вызываем родительский конструктор
         super().__init__(color, *sides)
-        if len(self.get_sides()) == 1:  # Если передали одну сторону
-            side_length = self.get_sides()[0]
-            self.__sides = [side_length] * self.sides_count  # Заполняем 12 одинаковыми сторонами
-        else:
-            self.__sides = [1] * self.sides_count  # По умолчанию
 
-    # Переопределяем метод для получения объёма куба
     def get_volume(self):
-        if len(set(self.__sides)) == 1:  # Проверяем, что все стороны одинаковы
-            return self.__sides[0] ** 3
-        return 0  # Объём 0, если стороны не одинаковы
+        """
+        Расчет объема куба
 
-# Код для проверки:
+        :return: объем куба
+        """
+        # Берем первую сторону как ребро куба
+        side = self.get_sides()[0]
+        return side ** 3
 
-if __name__ == "__main__":
-    circle1 = Circle((200, 200, 100), 10)  # (Цвет, стороны)
+
+# Демонстрация работы классов
+def main():
+    # Создаем круг
+    circle1 = Circle((200, 200, 100), 10)
+
+    # Создаем куб
     cube1 = Cube((222, 35, 130), 6)
 
-    # Проверка на изменение цветов:
+    # Создаем треугольник
+
+    triangle1 = Triangle((50, 60, 70), 3)
+
+    # Проверка изменения цветов
     circle1.set_color(55, 66, 77)  # Изменится
-    print(circle1.get_color())  # Ожидается: [55, 66, 77]
+    print(circle1.get_color())
 
     cube1.set_color(300, 70, 15)  # Не изменится
-    print(cube1.get_color())  # Ожидается: [222, 35, 130]
+    print(cube1.get_color())
 
-    # Проверка на изменение сторон:
+    # Проверка изменения сторон
     cube1.set_sides(5, 3, 12, 4, 5)  # Не изменится
-    print(cube1.get_sides())  # Ожидается: [6, 6, 6, ..., 6] (12)
+    print(cube1.get_sides())
+
+    triangle1.set_sides(12, 12, 3)
 
     circle1.set_sides(15)  # Изменится
-    print(circle1.get_sides())  # Ожидается: [15]
+    print(circle1.get_sides())
 
-    # Проверка периметра (круга), это и есть длина:
-    print(len(circle1))  # Ожидается: 15
+    # Проверка периметра круга
+    print(len(circle1))
 
-    # Проверка объёма (куба):
-    print(cube1.get_volume())  # Ожидается: 216 (6*6*6)
+    # Проверка объема куба
+    print(cube1.get_volume())
 
-    # Дополнительные проверки
+# Дополнительные проверки
     triangle1 = Triangle((100, 200, 150), 3, 4, 5)
     print("Triangle sides:", triangle1.get_sides())  # Ожидается: [3, 4, 5]
     print("Triangle area:", triangle1.get_square())  # Ожидается: 6.0
@@ -126,3 +202,7 @@ if __name__ == "__main__":
 
     cube2 = Cube((10, 20, 30), 5)  # Создание куба
     print("Cube volume:", cube2.get_volume())  # Ожидается: 125 (5*5*5)
+
+# Точка входа в программу
+if __name__ == "__main__":
+    main()
