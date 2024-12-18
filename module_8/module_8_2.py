@@ -1,58 +1,60 @@
 def personal_sum(numbers):
-    result = 0
-    incorrect_data = 0
+    """
+    Вычисляет сумму числовых элементов в коллекции и подсчитывает количество некорректных данных.
 
-    # Проверяем, является ли numbers итерируемым объектом
-    try:
-        iter(numbers)
-    except TypeError:
-        return 0, 0
-
-    # Если numbers - строка, преобразуем в список
-    if isinstance(numbers, str):
-        numbers = numbers.split(',')
+    :param numbers: Коллекция элементов, которые нужно обработать.
+    :return: Кортеж из двух значений:
+             - result (int или float): Сумма всех числовых элементов.
+             - incorrect_data (int): Количество элементов с некорректным типом.
+    """
+    result = 0  # Инициализация суммы чисел
+    incorrect_data = 0  # Инициализация счетчика некорректных данных
 
     for item in numbers:
         try:
-            # Пытаемся преобразовать элемент в число
-            num = float(item)
-            result += num
-        except (TypeError, ValueError):
-            # Увеличиваем счетчик некорректных данных
-            incorrect_data += 1
-            # Выводим сообщение о некорректных данных
+            result += item  # Попытка добавить элемент к сумме
+        except TypeError:
+            # Если элемент не является числом, обрабатываем исключение
             print(f'Некорректный тип данных для подсчёта суммы - {item}')
+            incorrect_data += 1  # Увеличиваем счетчик некорректных данных
 
-    return result, incorrect_data
+    return result, incorrect_data  # Возвращаем сумму и количество некорректных данных
 
 
 def calculate_average(numbers):
-    # Проверяем тип входных данных
-    if not isinstance(numbers, (list, tuple, str)):
+    """
+    Вычисляет среднее арифметическое числовых элементов в коллекции.
+
+    :param numbers: Коллекция элементов, из которых нужно вычислить среднее.
+    :return: Среднее арифметическое всех числовых элементов.
+             Возвращает 0, если нет корректных чисел.
+             Возвращает None, если передан некорректный тип данных.
+    """
+    try:
+        # Вызываем функцию personal_sum для получения суммы и количества некорректных данных
+        total_sum, incorrect = personal_sum(numbers)
+
+        # Вычисляем количество корректных чисел
+        valid_count = len(numbers) - incorrect
+
+        # Проверяем, что количество корректных чисел больше нуля, чтобы избежать деления на ноль
+        average = total_sum / valid_count
+        return average  # Возвращаем среднее арифметическое
+
+    except ZeroDivisionError:
+        # Если valid_count равен нулю, возвращаем 0
+        return 0
+    except TypeError:
+        # Если переданный аргумент не является коллекцией, обрабатываем исключение
         print('В numbers записан некорректный тип данных')
         return None
 
-    try:
-        # Вызываем personal_sum для подсчета суммы
-        total_sum, _ = personal_sum(numbers)
 
-        # Считаем количество корректных чисел
-        count = len([num for num in numbers if isinstance(num, (int, float)) or
-                     (isinstance(num, str) and num.replace('.', '').isdigit())])
+# Примеры вызова функций с разными типами данных
+print(f'Результат 1: {calculate_average("1, 2, 3")}')  # Строка перебирается, но каждый символ - строковый тип
 
-        # Обрабатываем деление на ноль
-        if count == 0:
-            return 0
+print(f'Результат 2: {calculate_average([1, "Строка", 3, "Ещё Строка"])}')  # Учитываются только 1 и 3
 
-        # Возвращаем среднее арифметическое
-        return total_sum / count
+print(f'Результат 3: {calculate_average(567)}')  # Передана не коллекция
 
-    except ZeroDivisionError:
-        return 0
-
-
-# Проверяем работу функций
-print(f'Результат 1: {calculate_average("1, 2, 3")}')
-print(f'Результат 2: {calculate_average([1, "Строка", 3, "Ещё Строка"])}')
-print(f'Результат 3: {calculate_average(567)}')
-print(f'Результат 4: {calculate_average([42, 15, 36, 13])}')
+print(f'Результат 4: {calculate_average([42, 15, 36, 13])}')  # Всё должно работать
