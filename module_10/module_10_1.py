@@ -42,7 +42,7 @@ def main():
     # Вычисляем и выводим время выполнения функций
     end_time_func = time.time()
     func_duration = end_time_func - start_time_func
-    print(f"Время работы функций: {func_duration:.2f} секунд")
+    print(f"Время работы функций: {func_duration} секунд")
 
     # Засекаем начальное время для потоков
     start_time_threads = time.time()
@@ -74,7 +74,7 @@ def main():
     # Вычисляем и выводим время выполнения потоков
     end_time_threads = time.time()
     threads_duration = end_time_threads - start_time_threads
-    print(f"Время работы потоков: {threads_duration:.2f} секунд")
+    print(f"Время работы потоков: {threads_duration} секунд")
 
 
 # Точка входа в программу
