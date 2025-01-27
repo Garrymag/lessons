@@ -32,7 +32,7 @@ print(f"Linear execution time: {end_time - start_time}")
 
 # Выполнение с multiprocessing
 if __name__ == '__main__':
-    # Защищаем точку входа скрипта, чтобы гарантировать безопасное создание процессов, особенно на Windows
+    # Защищаем точку входа скрипта, чтобы гарантировать безопасное создание процессов
     start_time = time.time()
     # Записываем время начала выполнения с использованием multiprocessing
     with multiprocessing.Pool() as pool:
